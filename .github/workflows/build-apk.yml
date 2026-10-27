@@ -3,9 +3,6 @@ name: Build Castla APK
 
 on:
   workflow_dispatch:
-  push:
-    paths:
-      - ".github/workflows/build-apk.yml"
 
 permissions:
   contents: read
@@ -23,11 +20,14 @@ jobs:
         with:
           distribution: temurin
           java-version: "17"
+          cache: gradle
 
       - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
+        uses: android-actions/setup-android@v4
+        with:
+          packages: platform-tools
 
-      - name: Build APK
+      - name: Build Castla APK
         run: |
           chmod +x gradlew
           ./gradlew assembleDebug
@@ -38,3 +38,4 @@ jobs:
           name: Castla-APK
           path: app/build/outputs/apk/debug/*.apk
           if-no-files-found: error
+          retention-days: 7
